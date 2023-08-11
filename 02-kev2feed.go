@@ -40,7 +40,6 @@ func main() {
 	if err != nil {
 		log.Fatal("Error fetching data:", err) // https://pkg.go.dev/log#Fatal
 	}
-	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -53,14 +52,14 @@ func main() {
 		log.Fatal("Error unmarshaling JSON:", err)
 	}
 
-	now := time.Now()
+	resp.Body.Close()
 
 	feed := &feeds.Feed{
 		Title:       kevData.Title,
 		Link:        &feeds.Link{Href: url},
 		Description: "CISA's Known Exploited Vulnerability (KEV) catalog is an authoritative source of vulnerabilities that have been exploited in the wild, helping organizations prioritize remediation efforts to reduce cyber risks",
 		Author:      &feeds.Author{Name: "CISA", Email: "Central@cisa.dhs.gov"},
-		Created:     now,
+		Created:     time.Now(),
 	}
 
 	for _, vulnerability := range kevData.Vulnerabilities {
